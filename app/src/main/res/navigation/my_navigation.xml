@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_movie_list_to_movieFragment"
             app:destination="@id/movieFragment" />
+        <action
+            android:id="@+id/action_movie_list_to_movieGenreFragment"
+            app:destination="@id/movieGenreFragment" />
     </fragment>
     <fragment
         android:id="@+id/movieFragment"
@@ -29,4 +32,9 @@
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>
+    <fragment
+        android:id="@+id/movieGenreFragment"
+        android:name="br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment.MovieGenreFragment"
+        android:label="fragment_movie_genre"
+        tools:layout="@layout/fragment_movie_genre" />
 </navigation>
