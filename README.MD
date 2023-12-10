@@ -36,17 +36,17 @@ Deve-se manter observância aos conceitos de desenvolvimento de um banco de dado
     - [X]  Criar métodos para criar, ler, atualizar e excluir filmes no banco de dados.
     - [X]  Criar tabela com os gêneros → que posteriormente poderão ser cadastrados pelo usuário
 4. **Desenvolvimento da Interface Gráfica (UI):**
-    - [ ]  Tela principal que exibirá a lista de filmes.
-    - [ ]  Menu de ações para adicionar, visualizar detalhes e apagar filmes.
-    - [ ]  Implementar um componente Spinner para seleção de gênero ao cadastrar um filme.
+    - [X]  Tela principal que exibirá a lista de filmes.
+    - [X]  Menu de ações para adicionar, visualizar detalhes e apagar filmes.
+    - [X]  Implementar um componente Spinner para seleção de gênero ao cadastrar um filme.
 5. **Implementação das Funcionalidades:**
-    - [ ]  Desenvolver a lógica para adicionar novos filmes.
-    - [ ]  Permitir visualizar detalhes de um filme ao clicar na célula correspondente.
-    - [ ]  Implementar a funcionalidade de apagar filmes cadastrados.
+    - [X]  Desenvolver a lógica para adicionar novos filmes.
+    - [X]  Permitir visualizar detalhes de um filme ao clicar na célula correspondente.
+    - [X]  Implementar a funcionalidade de apagar filmes cadastrados.
 6. **Ordenação da Lista:**
     - [ ]  Adicionar opções para ordenar os filmes por nome ou nota na tela principal.
 7. **Edição dos Campos:**
-    - [ ]  Permitir a edição de todos os campos, exceto o nome do filme, na tela de detalhes.
+    - [X]  Permitir a edição de todos os campos, exceto o nome do filme, na tela de detalhes.
 8. **Cadastro e Remoção de Gêneros:**
     - [ ]  Implementar a funcionalidade para cadastrar e remover outros gêneros.
 9. **Arquitetura do Software:**
