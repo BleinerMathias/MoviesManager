@@ -44,20 +44,16 @@ Deve-se manter observância aos conceitos de desenvolvimento de um banco de dado
     - [X]  Permitir visualizar detalhes de um filme ao clicar na célula correspondente.
     - [X]  Implementar a funcionalidade de apagar filmes cadastrados.
 6. **Ordenação da Lista:**
-    - [ ]  Adicionar opções para ordenar os filmes por nome ou nota na tela principal.
+    - [X]  Adicionar opções para ordenar os filmes por nome ou nota na tela principal.
 7. **Edição dos Campos:**
     - [X]  Permitir a edição de todos os campos, exceto o nome do filme, na tela de detalhes.
-8. **Cadastro e Remoção de Gêneros:**
-    - [ ]  Implementar a funcionalidade para cadastrar e remover outros gêneros.
-9. **Arquitetura do Software:**
-    - [ ]  Projeto seguindo uma arquitetura de software MVVC.
-10. **Commits e Mensagens:**
-    - [ ]  Realizar commits regulares com mensagens claras e descritivas.
+8. **Arquitetura do Software:**
+    - [x]  Projeto seguindo uma arquitetura de software MVVC.
+9. **Commits e Mensagens:**
+    - [X]  Realizar commits regulares com mensagens claras e descritivas.
 11. **Testes:**
     - [ ]  Realize testes para garantir o funcionamento adequado das funcionalidades.
-12. **Vídeo de Demonstração:**
-    - [ ]  Grave um vídeo mostrando o aplicativo em uso, narrando e demonstrando as principais funcionalidades (máximo de 5 minutos).
-    - [ ]  Adicione o vídeo ao repositório.
+
 
 ### ⚠️Casos de uso
 
