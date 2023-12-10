@@ -48,17 +48,16 @@ class MovieFragment : Fragment() {
 
                 checkBoxWatched.isChecked = movie.watched == MOVIE_WATCHED_TRUE
                 navigationArgs.editMovie.also { editTask ->
+
+                    editTextMovieName.isEnabled = false
                     if(editTask){
                         (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
                             getString(R.string.title_edit_movie)
-
-                        editTextMovieName.isEnabled = false
                         btnSaveMovie.visibility = VISIBLE
                     }else{
-                        editTextMovieName.isEnabled = false
-
+                        btnSaveMovie.visibility = GONE
                         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = movie.name
-1                   }
+                    }
 
                     editTextReleaseYear.isEnabled = editTask
                     editTextProducer.isEnabled = editTask

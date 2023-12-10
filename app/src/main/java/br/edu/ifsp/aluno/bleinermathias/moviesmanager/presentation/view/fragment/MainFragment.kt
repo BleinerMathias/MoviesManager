@@ -126,7 +126,9 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
     override fun onMovieClick(position: Int) = navigateToMovieFragment(position, false)
 
     override fun onRemoveMovieMenuItemClick(position: Int) {
-        TODO("Not yet implemented")
+        movieViewModel.removeMovie(moviesList[position])
+        moviesList.removeAt(position)
+        movieAdapter.notifyItemRemoved(position)
     }
 
     override fun onEditMovieMenuItemClick(position: Int) = navigateToMovieFragment(position,true)

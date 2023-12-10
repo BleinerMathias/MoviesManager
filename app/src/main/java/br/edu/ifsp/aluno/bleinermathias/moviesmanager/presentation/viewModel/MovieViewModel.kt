@@ -39,6 +39,12 @@ class MovieViewModel(application: Application):ViewModel() {
         }
     }
 
+    fun removeMovie(movie:Movie){
+        CoroutineScope(Dispatchers.IO).launch {
+            movieDaoImplement.delete(movie)
+        }
+    }
+
     companion object {
         val MovieViewModelFactory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T =
