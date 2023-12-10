@@ -34,7 +34,7 @@ Deve-se manter observância aos conceitos de desenvolvimento de um banco de dado
 3. **Implementação do Banco de Dados:**
     - [X]  Configurar a classe de gerenciamento do banco de dados usando SQLite.
     - [X]  Criar métodos para criar, ler, atualizar e excluir filmes no banco de dados.
-    - [ ]  Criar tabela com os gêneros → que posteriormente poderão ser cadastrados pelo usuário
+    - [X]  Criar tabela com os gêneros → que posteriormente poderão ser cadastrados pelo usuário
 4. **Desenvolvimento da Interface Gráfica (UI):**
     - [ ]  Tela principal que exibirá a lista de filmes.
     - [ ]  Menu de ações para adicionar, visualizar detalhes e apagar filmes.

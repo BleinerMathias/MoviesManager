@@ -10,17 +10,17 @@ import java.util.UUID
 @Entity
 data class Movie(
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    val id: String,
     val name: String,
     val releaseYear: Int,
     val producer: String,
     val duration: Int,
-    val watched: Int = TASK_WATCHED_FALSE,
+    val watched: Int = MOVIE_WATCHED_FALSE,
     val rating: Int,
     val genre: String
 ) : Parcelable {
     companion object {
         const val MOVIE_WATCHED_TRUE = 1
-        const val TASK_WATCHED_FALSE = 0
+        const val MOVIE_WATCHED_FALSE = 0
     }
 }

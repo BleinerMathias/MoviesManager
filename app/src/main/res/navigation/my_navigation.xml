@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_navigation"
+    app:startDestination="@id/movie_list">
+
+    <fragment
+        android:id="@+id/movie_list"
+        android:name="br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment.MainFragment"
+        android:label="fragment_movie_list"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_movie_list_to_movieFragment"
+            app:destination="@id/movieFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieFragment"
+        android:name="br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment.MovieFragment"
+        android:label="fragment_movie"
+        tools:layout="@layout/fragment_movie">
+        <argument
+            android:name="movie"
+            app:argType="br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="editMovie"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+</navigation>
