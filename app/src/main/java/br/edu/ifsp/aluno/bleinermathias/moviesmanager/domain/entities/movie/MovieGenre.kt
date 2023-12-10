@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity
 data class MovieGenre(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     var id:Int,
     var name: String
 ):Parcelable

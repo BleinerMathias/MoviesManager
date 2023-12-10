@@ -30,6 +30,7 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.databinding.FragmentMainBi
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_FALSE
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_TRUE
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.MovieGenre
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.MovieAdapter
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.OnMovieTileClickListener
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.MovieViewModel
@@ -58,6 +59,7 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
 
     companion object {
         const val EXTRA_MOVIE = "EXTRA_MOVIE"
+        const val EXTRA_MOVIE_GENRE = "EXTRA_MOVIE_GENRE"
         const val MOVIE_FRAGMENT_REQUEST_KEY = "MOVIE_FRAGMENT_REQUEST_KEY"
     }
 
@@ -78,6 +80,13 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                     bundle.getParcelable(EXTRA_MOVIE)
                 }
 
+                val movieGenre = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    bundle.getParcelable(EXTRA_MOVIE_GENRE, MovieGenre::class.java)
+                } else {
+                    bundle.getParcelable(EXTRA_MOVIE_GENRE)
+                }
+
+
                 movie?.also { receivedMovie ->
                     moviesList.indexOfFirst { it.id == receivedMovie.id }.also { position ->
                         if (position != -1) {
@@ -90,6 +99,11 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                             movieAdapter.notifyItemInserted(moviesList.lastIndex)
                         }
                     }
+                }
+
+                movieGenre?.also { receivedMovieGenre ->
+                    showSimpleAlertDialog(receivedMovieGenre.toString())
+                    movieViewModel.createMovieGenre(receivedMovieGenre);
                 }
 
                 (context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
@@ -195,6 +209,23 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
             SortType.BY_RATING -> moviesList.sortByDescending { it.rating }
         }
         movieAdapter.notifyDataSetChanged()
+    }
+
+    private fun showSimpleAlertDialog(text:String) {
+        val alertDialogBuilder = AlertDialog.Builder(this.context)
+
+        // Set the dialog message
+        alertDialogBuilder.setMessage(text)
+
+        // Set OK button and its action
+        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
+            // Do something when the user clicks the OK button
+            dialog.dismiss()  // Dismiss the dialog
+        }
+
+        // Create and show the alert dialog
+        val alertDialog: AlertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
 
 }

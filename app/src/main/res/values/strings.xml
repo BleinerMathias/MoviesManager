@@ -14,6 +14,7 @@
     <string name="btn_edit_movie">Atualizar</string>
     <string name="menu_search">Buscar</string>
     <string name="movie_details">Detalhes do Filme</string>
+    <string name="subtitle_new_genre">Novo gênero</string>
 
     <string-array name="genre_array">
         <item>Comédia</item>
