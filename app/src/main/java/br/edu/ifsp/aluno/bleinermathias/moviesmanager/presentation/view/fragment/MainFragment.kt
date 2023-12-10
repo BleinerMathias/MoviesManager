@@ -169,6 +169,12 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                         sortMoviesInPlace(SortType.BY_RATING)
                         return true
                     }
+                    R.id.menuAddMovieGenre -> {
+                        navigatorController.navigate(
+                            MainFragmentDirections.actionMovieListToMovieGenreFragment()
+                        )
+                        return true
+                    }
                     else -> return true
                 }
 
