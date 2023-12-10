@@ -29,59 +29,52 @@ class MovieFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
+            getString(R.string.movie_details)
+
         fragmentMovieBinding = FragmentMovieBinding.inflate(inflater, container, false)
 
-        // Edição - Recebe argumentos
         val receivedMovie = navigationArgs.movie
 
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.new_movie)
+        if(receivedMovie == null){
+            (activity as AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.new_movie)
+        }
 
         receivedMovie?.also { movie ->
             with(fragmentMovieBinding) {
+
+                editTextMovieName.isEnabled = false
                 editTextMovieName.setText(movie.name)
                 editTextReleaseYear.setText(movie.releaseYear.toString())
                 editTextProducer.setText(movie.producer)
                 editTextDuration.setText(movie.duration.toString())
                 editTextRating.setText(movie.rating.toString())
 
-                // spinner (fazer)
+                // se receber editavel, passar os valores do campo
+                navigationArgs.editMovie.also { editMovie ->
+                    editTextReleaseYear.isEnabled = editMovie
+                    editTextProducer.isEnabled = editMovie
+                    editTextDuration.isEnabled = editMovie
+                    editTextRating.isEnabled = editMovie
+                    spinnerGenre.isEnabled = editMovie
 
-                checkBoxWatched.isChecked = movie.watched == MOVIE_WATCHED_TRUE
-                navigationArgs.editMovie.also { editTask ->
+                    btnSaveMovie.text = if (editMovie) getString(R.string.btn_edit_movie) else ""
+                    btnSaveMovie.visibility = if (editMovie) VISIBLE else GONE
 
-                    editTextMovieName.isEnabled = false
-                    if(editTask){
-                        (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
-                            getString(R.string.title_edit_movie)
-                        btnSaveMovie.visibility = VISIBLE
-                    }else{
-                        btnSaveMovie.visibility = GONE
-                        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = movie.name
+                    if(editMovie){
+                        (activity as AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.edit_movie)
                     }
-
-                    editTextReleaseYear.isEnabled = editTask
-                    editTextProducer.isEnabled = editTask
-                    editTextDuration.isEnabled = editTask
-                    editTextRating.isEnabled = editTask
-                    spinnerGenre.isEnabled = editTask
 
                 }
             }
         }
 
         fragmentMovieBinding.run {
-
-            if (receivedMovie == null) {
-                btnSaveMovie.text = getString(R.string.btn_save_movie)
-            }else{
-                btnSaveMovie.text = getString(R.string.btn_edit_movie)
-            }
-
             btnSaveMovie.setOnClickListener {
                 val checked = if (checkBoxWatched.isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE
                 setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
                     putParcelable(
-                        EXTRA_MOVIE, Movie( UUID.randomUUID().toString(),
+                        EXTRA_MOVIE, Movie(receivedMovie?.id ?: UUID.randomUUID().toString(),
                             editTextMovieName.text.toString(),
                             editTextReleaseYear.text.toString().toInt(),
                             editTextProducer.text.toString(),
@@ -94,9 +87,30 @@ class MovieFragment : Fragment() {
                 })
                 findNavController().navigateUp()
             }
+
+            checkBoxWatched.setOnCheckedChangeListener{_, isChecked ->
+                setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
+                    putParcelable(
+                        EXTRA_MOVIE, Movie(receivedMovie?.id ?: UUID.randomUUID().toString(),
+                            editTextMovieName.text.toString(),
+                            editTextReleaseYear.text.toString().toInt(),
+                            editTextProducer.text.toString(),
+                            editTextDuration.text.toString().toInt(),
+                            if(isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE,
+                            editTextRating.text.toString().toInt(),
+                            spinnerGenre.selectedItem.toString()
+                        )
+                    )
+                })
+                findNavController().navigateUp()
+            }
+
         }
 
         return fragmentMovieBinding.root
     }
+
+
+
 
 }

@@ -26,6 +26,7 @@ class MovieAdapter(private val movieList : List<Movie>, private val onMovieTileC
         val textViewRating : TextView = tileMovieBinding.textViewRating
 
         init {
+
             // Definindo funções para o adapter - através de menus de contextos
             tileMovieBinding.apply {
                 root.run {

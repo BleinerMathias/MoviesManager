@@ -1,6 +1,7 @@
 package br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +38,12 @@ class MovieViewModel(application: Application):ViewModel() {
                 val movies = movieDaoImplement.getAllMovies()
                 moviesMutableLiveData.postValue(movies)
             }
+        }
+    }
+
+    fun editMovie(movie: Movie){
+        CoroutineScope(Dispatchers.IO).launch {
+            movieDaoImplement.update(movie)
         }
     }
 

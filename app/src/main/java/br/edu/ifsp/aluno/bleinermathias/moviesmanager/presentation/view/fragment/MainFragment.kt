@@ -28,6 +28,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.R
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.databinding.FragmentMainBinding
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_FALSE
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_TRUE
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.MovieAdapter
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.OnMovieTileClickListener
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.MovieViewModel
@@ -78,8 +80,8 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
 
                 movie?.also { receivedMovie ->
                     moviesList.indexOfFirst { it.id == receivedMovie.id }.also { position ->
-                        if (position != -1) {  // Task editada
-                            //movieViewModel.editTask(receivedTask)
+                        if (position != -1) {
+                            movieViewModel.editMovie(receivedMovie)
                             moviesList[position] = receivedMovie
                             movieAdapter.notifyItemChanged(position)
                         } else {
@@ -90,7 +92,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                     }
                 }
 
-                // Hiding soft keyboard
                 (context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
                     fragmentMainBinding.root.windowToken,
                     HIDE_NOT_ALWAYS
@@ -115,6 +116,7 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
 
         // action bar da activity main
         (activity as AppCompatActivity)?.supportActionBar?.title = getString(R.string.my_movies)
+        (activity as AppCompatActivity)?.supportActionBar?.subtitle = ""
 
         fragmentMainBinding = FragmentMainBinding.inflate(inflater,container,false).apply {
             recyclerViewMovies.layoutManager = LinearLayoutManager(context)
@@ -172,11 +174,10 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
     override fun onEditMovieMenuItemClick(position: Int) = navigateToMovieFragment(position,true)
 
     override fun onWatchedCheckBoxClick(position: Int, checked: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun sorted() {
-        sortMoviesInPlace(SortType.ALPHABETICAL)
+        moviesList[position].apply {
+            watched = if(checked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE
+            movieViewModel.editMovie(this)
+        }
     }
 
     // Método para navegar para edição e visualização
@@ -193,9 +194,7 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
             SortType.ALPHABETICAL -> moviesList.sortBy { it.name }
             SortType.BY_RATING -> moviesList.sortByDescending { it.rating }
         }
-        movieAdapter.notifyDataSetChanged() // Notifica o adapter que os dados mudaram
-
+        movieAdapter.notifyDataSetChanged()
     }
-
 
 }
