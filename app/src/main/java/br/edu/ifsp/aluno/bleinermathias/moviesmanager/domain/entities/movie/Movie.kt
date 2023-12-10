@@ -15,7 +15,7 @@ data class Movie(
     val releaseYear: Int,
     val producer: String,
     val duration: Int,
-    val watched: Int = MOVIE_WATCHED_FALSE,
+    var watched: Int = MOVIE_WATCHED_FALSE,
     val rating: Int,
     val genre: String
 ) : Parcelable {

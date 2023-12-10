@@ -1,13 +1,16 @@
 package br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -19,9 +22,11 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.R
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.databinding.FragmentMainBinding
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.MovieAdapter
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.OnMovieTileClickListener
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.MovieViewModel
+import kotlin.math.log
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), OnMovieTileClickListener {
 
     // Instanciar o binding
     private lateinit var fragmentMainBinding: FragmentMainBinding
@@ -29,7 +34,7 @@ class MainFragment : Fragment() {
     private val moviesList: MutableList<Movie> = mutableListOf()
 
     private val movieAdapter: MovieAdapter by lazy {
-        MovieAdapter(moviesList)
+        MovieAdapter(moviesList, this)
     }
 
     // Navigator
@@ -90,9 +95,7 @@ class MainFragment : Fragment() {
                 movieAdapter.notifyItemChanged(index) // notifica o adapter que um indice foi alterado
             }
         }
-
         movieViewModel.getMovies()
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -114,8 +117,31 @@ class MainFragment : Fragment() {
                 )
             }
         }
+
         // retorna a view
         return fragmentMainBinding.root
+    }
+
+    // Funções implementadas do listener do adapter
+    override fun onMovieClick(position: Int) = navigateToMovieFragment(position, false)
+
+    override fun onRemoveMovieMenuItemClick(position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onEditMovieMenuItemClick(position: Int) = navigateToMovieFragment(position,true)
+
+    override fun onWatchedCheckBoxClick(position: Int, checked: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    // Método para navegar para edição e visualização
+    private fun navigateToMovieFragment(position: Int, editMovie: Boolean) {
+        moviesList[position].also {
+            navigatorController.navigate(
+                MainFragmentDirections.actionMovieListToMovieFragment(it, editMovie)
+            )
+        }
     }
 
 }

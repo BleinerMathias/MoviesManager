@@ -29,17 +29,17 @@ class MovieFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.new_movie)
-
         fragmentMovieBinding = FragmentMovieBinding.inflate(inflater, container, false)
 
-
-        // Edição - recebe argumentos
+        // Edição - Recebe argumentos
         val receivedMovie = navigationArgs.movie
+
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.new_movie)
+
         receivedMovie?.also { movie ->
             with(fragmentMovieBinding) {
                 editTextMovieName.setText(movie.name)
-                editTextReleaseYear.setText(movie.releaseYear)
+                editTextReleaseYear.setText(movie.releaseYear.toString())
                 editTextProducer.setText(movie.producer)
                 editTextDuration.setText(movie.duration.toString())
                 editTextRating.setText(movie.rating.toString())
@@ -47,17 +47,36 @@ class MovieFragment : Fragment() {
                 // spinner (fazer)
 
                 checkBoxWatched.isChecked = movie.watched == MOVIE_WATCHED_TRUE
-
                 navigationArgs.editMovie.also { editTask ->
-                    editTextMovieName.isEnabled = editTask
-                    btnSaveMovie.visibility = if (editTask) VISIBLE else GONE
+                    if(editTask){
+                        (activity as? AppCompatActivity)?.supportActionBar?.subtitle =
+                            getString(R.string.title_edit_movie)
+
+                        editTextMovieName.isEnabled = false
+                        btnSaveMovie.visibility = VISIBLE
+                    }else{
+                        editTextMovieName.isEnabled = false
+
+                        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = movie.name
+1                   }
+
+                    editTextReleaseYear.isEnabled = editTask
+                    editTextProducer.isEnabled = editTask
+                    editTextDuration.isEnabled = editTask
+                    editTextRating.isEnabled = editTask
+                    spinnerGenre.isEnabled = editTask
+
                 }
             }
         }
 
         fragmentMovieBinding.run {
 
-            btnSaveMovie.text = "Atualizar";
+            if (receivedMovie == null) {
+                btnSaveMovie.text = getString(R.string.btn_save_movie)
+            }else{
+                btnSaveMovie.text = getString(R.string.btn_edit_movie)
+            }
 
             btnSaveMovie.setOnClickListener {
                 val checked = if (checkBoxWatched.isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE

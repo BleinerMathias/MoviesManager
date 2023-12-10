@@ -4,14 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.R
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.databinding.TileMovieBinding
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_TRUE
 
 // Recebe a lista para o adapter e os eventos de cliques
 // RecyclerView.Adapter<CustomAdapter.ViewHolder>>
-class MovieAdapter(private val movieList : List<Movie>): RecyclerView.Adapter<MovieAdapter.MovieTileViewHolder>() {
+class MovieAdapter(private val movieList : List<Movie>, private val onMovieTileClickListener: OnMovieTileClickListener): RecyclerView.Adapter<MovieAdapter.MovieTileViewHolder>() {
     inner class MovieTileViewHolder(tileMovieBinding: TileMovieBinding):RecyclerView.ViewHolder(tileMovieBinding.root){
         // Itens da célula
 
@@ -24,6 +26,33 @@ class MovieAdapter(private val movieList : List<Movie>): RecyclerView.Adapter<Mo
         val textViewRating : TextView = tileMovieBinding.textViewRating
 
         init {
+            // Definindo funções para o adapter - através de menus de contextos
+            tileMovieBinding.apply {
+                root.run {
+                    setOnCreateContextMenuListener { menu, _, _ ->
+                        (onMovieTileClickListener as? Fragment)?.activity?.menuInflater?.inflate(
+                            R.menu.context_menu,
+                            menu
+                        )
+                        menu?.findItem(R.id.menuRemoveMovie)?.setOnMenuItemClickListener {
+                            onMovieTileClickListener.onRemoveMovieMenuItemClick(adapterPosition)
+                            true
+                        }
+                        menu?.findItem(R.id.menuEditMovie)?.setOnMenuItemClickListener {
+                            onMovieTileClickListener.onEditMovieMenuItemClick(adapterPosition)
+                            true
+                        }
+                    }
+                    setOnClickListener {
+                        onMovieTileClickListener.onMovieClick(adapterPosition)
+                    }
+                }
+                checkBoxWatched.run {
+                    setOnClickListener {
+                        onMovieTileClickListener.onWatchedCheckBoxClick(adapterPosition, isChecked)
+                    }
+                }
+            }
 
         }
 
@@ -39,11 +68,11 @@ class MovieAdapter(private val movieList : List<Movie>): RecyclerView.Adapter<Mo
         movieList[position].let { movie ->
             with(holder) {
                 textViewMovieName.text = movie.name
-                textViewReleaseYear.text = movie.releaseYear.toString()
-                textViewDuration.text = movie.duration.toString()
+                textViewReleaseYear.text = "${movie.releaseYear.toString()}  -"
+                textViewDuration.text = "Duração : ${movie.duration.toString()} minutos"
                 textViewGenre.text = movie.genre
-                textViewProducer.text = movie.producer
-                textViewRating.text = movie.rating.toString()
+                textViewProducer.text = "Estúdio/Produtora : ${movie.producer} "
+                textViewRating.text = "Nota: ${movie.rating.toString()}"
                 checkBoxWatched.isChecked = movie.watched == MOVIE_WATCHED_TRUE
             }
         }

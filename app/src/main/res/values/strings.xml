@@ -6,7 +6,12 @@
     <string name="insert_new_movie">Insert new movie</string>
     <string name="my_movies">My movies</string>
     <string name="movies_details">Detalhes</string>
-    <string name="new_movie">New movie</string>
+    <string name="new_movie">Incluir filme</string>
+    <string name="remove_movie">Excluir filme</string>
+    <string name="edit_movie">Editar filme</string>
+    <string name="title_edit_movie">Editar filme</string>
+    <string name="btn_save_movie">Salvar</string>
+    <string name="btn_edit_movie">Atualizar</string>
 
     <string-array name="genre_array">
         <item>Comédia</item>
