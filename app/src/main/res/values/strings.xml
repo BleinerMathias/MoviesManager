@@ -12,6 +12,7 @@
     <string name="title_edit_movie">Editar filme</string>
     <string name="btn_save_movie">Salvar</string>
     <string name="btn_edit_movie">Atualizar</string>
+    <string name="menu_search">Buscar</string>
 
     <string-array name="genre_array">
         <item>Comédia</item>

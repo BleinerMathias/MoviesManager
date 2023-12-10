@@ -6,15 +6,22 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +32,11 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.OnMovieTileClickListener
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.MovieViewModel
 import kotlin.math.log
+
+enum class SortType {
+    ALPHABETICAL,
+    BY_RATING
+}
 
 class MainFragment : Fragment(), OnMovieTileClickListener {
 
@@ -122,6 +134,32 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
         return fragmentMainBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.main_menu, menu)
+            }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.menuSortByAlphabetic -> {
+                        sortMoviesInPlace(SortType.ALPHABETICAL)
+                        return true
+                    }
+                    R.id.menuSortByRating -> {
+                        sortMoviesInPlace(SortType.BY_RATING)
+                        return true
+                    }
+                    else -> return true
+                }
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
     // Funções implementadas do listener do adapter
     override fun onMovieClick(position: Int) = navigateToMovieFragment(position, false)
 
@@ -137,6 +175,10 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
         TODO("Not yet implemented")
     }
 
+    override fun sorted() {
+        sortMoviesInPlace(SortType.ALPHABETICAL)
+    }
+
     // Método para navegar para edição e visualização
     private fun navigateToMovieFragment(position: Int, editMovie: Boolean) {
         moviesList[position].also {
@@ -145,5 +187,15 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
             )
         }
     }
+
+    fun sortMoviesInPlace(sortType: SortType) {
+        when (sortType) {
+            SortType.ALPHABETICAL -> moviesList.sortBy { it.name }
+            SortType.BY_RATING -> moviesList.sortByDescending { it.rating }
+        }
+        movieAdapter.notifyDataSetChanged() // Notifica o adapter que os dados mudaram
+
+    }
+
 
 }

@@ -12,7 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 class MovieViewModel(application: Application):ViewModel() {
+
     private val movieDaoImplement = Room.databaseBuilder(
         application.applicationContext,
         MoviesDatabase::class.java,
@@ -34,7 +36,6 @@ class MovieViewModel(application: Application):ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
                 val movies = movieDaoImplement.getAllMovies()
                 moviesMutableLiveData.postValue(movies)
-
             }
         }
     }
