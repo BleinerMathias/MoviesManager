@@ -28,12 +28,12 @@ Deve-se manter observância aos conceitos de desenvolvimento de um banco de dado
         - [X]  Parcelize
         - [X]  Navigation Safe
 2. **Desenvolvimento do Modelo de Dados:**
-    - [ ]  Criar a classe/modelo para representar os filmes.
-    - [ ]  Criar a classe/modelo para representar os gêneros.
-    - [ ]  Adicione os atributos necessários: nome, ano de lançamento, produtora, duração, flag de assistido, nota e gênero.
+    - [X]  Criar a classe/modelo para representar os filmes.
+    - [X]  Criar a classe/modelo para representar os gêneros.
+    - [X]  Adicione os atributos necessários: nome, ano de lançamento, produtora, duração, flag de assistido, nota e gênero.
 3. **Implementação do Banco de Dados:**
-    - [ ]  Configurar a classe de gerenciamento do banco de dados usando SQLite.
-    - [ ]  Criar métodos para criar, ler, atualizar e excluir filmes no banco de dados.
+    - [X]  Configurar a classe de gerenciamento do banco de dados usando SQLite.
+    - [X]  Criar métodos para criar, ler, atualizar e excluir filmes no banco de dados.
     - [ ]  Criar tabela com os gêneros → que posteriormente poderão ser cadastrados pelo usuário
 4. **Desenvolvimento da Interface Gráfica (UI):**
     - [ ]  Tela principal que exibirá a lista de filmes.
