@@ -197,6 +197,7 @@ class MovieFragment : Fragment()  {
         editTextDuration.setText(movie.duration.toString())
         ratingBar.rating = movie.rating.toFloat()
         textViewRating.text = "Minha avaliação: ${movie.rating.toString()}"
+        checkBoxWatched.isChecked = movie.watched === MOVIE_WATCHED_TRUE
     }
 
 }
