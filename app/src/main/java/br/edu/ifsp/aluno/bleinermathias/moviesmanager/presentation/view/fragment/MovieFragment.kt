@@ -22,6 +22,10 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.databinding.FragmentMovieB
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_FALSE
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_TRUE
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.usecase.movie.MovieInputValidator
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.usecase.utils.Notification
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.usecase.utils.Validator
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.components.Alert
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment.MainFragment.Companion.EXTRA_MOVIE
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment.MainFragment.Companion.MOVIE_FRAGMENT_REQUEST_KEY
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.MovieViewModel
@@ -33,11 +37,10 @@ class MovieFragment : Fragment()  {
     private lateinit var fragmentMovieBinding: FragmentMovieBinding
     private val navigationArgs: MovieFragmentArgs by navArgs()
 
-    private var movieGenreList: ArrayList<String> = ArrayList()
-
     private val movieViewModel: MovieViewModel by viewModels {
         MovieViewModel.MovieViewModelFactory
     }
+
 
     private var selectedGenre = ""
 
@@ -50,9 +53,9 @@ class MovieFragment : Fragment()  {
 
         fragmentMovieBinding = FragmentMovieBinding.inflate(inflater, container, false)
 
+        var alert = Alert(requireContext())
 
         val receivedMovie = navigationArgs.movie
-
         if(receivedMovie == null){
             (activity as AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.new_movie)
         }
@@ -60,6 +63,7 @@ class MovieFragment : Fragment()  {
 
         movieViewModel.spinnerDataList.observe(requireActivity()){genres ->
             fragmentMovieBinding.apply {
+
                 spinnerGenre.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genres)
                 (spinnerGenre.adapter as ArrayAdapter<String>).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -85,15 +89,8 @@ class MovieFragment : Fragment()  {
         receivedMovie?.also { movie ->
             with(fragmentMovieBinding) {
 
-                editTextMovieName.isEnabled = false
-                editTextMovieName.setText(movie.name)
-                editTextReleaseYear.setText(movie.releaseYear.toString())
-                editTextProducer.setText(movie.producer)
-                editTextDuration.setText(movie.duration.toString())
-                ratingBar.rating = movie.rating.toFloat()
-                textViewRating.text = "Minha avaliação: ${movie.rating.toString()}"
+                populateFormRegisterOrUpdateMovie(movie)
 
-                // se receber editavel, passar os valores do campo
                 navigationArgs.editMovie.also { editMovie ->
                     ratingBar.setIsIndicator(!editMovie)
                     editTextReleaseYear.isEnabled = editMovie
@@ -107,7 +104,6 @@ class MovieFragment : Fragment()  {
                     if(editMovie){
                         (activity as AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.edit_movie)
                     }
-
                 }
             }
         }
@@ -119,99 +115,78 @@ class MovieFragment : Fragment()  {
             }
 
             btnSaveMovie.setOnClickListener {
-                val checked = if (checkBoxWatched.isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE
-
-                val movieName = editTextMovieName.text.toString()
-                val releaseYearText = editTextReleaseYear.text.toString()
-                val producer = editTextProducer.text.toString()
-                val durationText = editTextDuration.text.toString()
-
-                // Verificações e validações para cada campo
-                setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
-                    putParcelable(
-                        EXTRA_MOVIE, Movie(receivedMovie?.id ?: UUID.randomUUID().toString(),
-                            editTextMovieName.text.toString(),
-                            editTextReleaseYear.text.toString().toInt(),
-                            editTextProducer.text.toString(),
-                            editTextDuration.text.toString().toInt(),
-                            checked,
-                            ratingBar.rating.toInt(),
-                            selectedGenre
-                        )
-                    )
-                })
-                findNavController().navigateUp()
+                saveOrUpdate(receivedMovie, alert)
             }
 
             checkBoxWatched.setOnCheckedChangeListener{_, isChecked ->
-                setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
-                    putParcelable(
-                        EXTRA_MOVIE, Movie(receivedMovie?.id ?: UUID.randomUUID().toString(),
-                            editTextMovieName.text.toString(),
-                            editTextReleaseYear.text.toString().toInt(),
-                            editTextProducer.text.toString(),
-                            editTextDuration.text.toString().toInt(),
-                            if(isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE,
-                            ratingBar.rating.toInt(),
-                            spinnerGenre.selectedItem.toString()
-                        )
-                    )
-                })
-                findNavController().navigateUp()
+                if(receivedMovie !== null && isChecked){
+                    saveOrUpdate(receivedMovie, alert)
+                    findNavController().navigateUp()
+                }
             }
 
         }
         return fragmentMovieBinding.root
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    private fun FragmentMovieBinding.saveOrUpdate(
+        receivedMovie: Movie?,
+        alert: Alert
+    ) {
+
+        fragmentMovieBinding.run {
+            try {
+                val releaseYear = editTextReleaseYear.text.toString().toInt()
+                val duration = editTextDuration.text.toString().toInt()
+                val rating = ratingBar.rating.toInt()
+                val checked = if (checkBoxWatched.isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE
+
+                val movie = Movie(
+                    receivedMovie?.id ?: UUID.randomUUID().toString(),
+                    editTextMovieName.text.toString(),
+                    releaseYear,
+                    editTextProducer.text.toString(),
+                    duration,
+                    checked,
+                    rating,
+                    selectedGenre
+                )
+
+                val validator: Validator<Movie> = MovieInputValidator()
+                val notification: Notification = validator.validate(movie)
+
+                if (notification.hasErrors()) {
+                    alert.show(notification.errorMessage())
+                    return
+                }
+
+                // Verificações e validações para cada campo
+                setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
+                    putParcelable(
+                        EXTRA_MOVIE, movie
+                    )
+                })
+
+                findNavController().navigateUp()
+
+            } catch (e: NumberFormatException) {
+                alert.show("Existem campos não preenchidos e/ou incorretos")
+            }
+        }
+
     }
 
-    private fun validateYear(yearText: String): Int? {
-        if (yearText.isBlank()) {
-            showToast("Digite o ano de lançamento")
-            return null
-        }
-        return try {
-            yearText.toInt()
-        } catch (e: NumberFormatException) {
-            showToast("Ano de lançamento inválido")
-            null
-        }
+    private fun FragmentMovieBinding.populateFormRegisterOrUpdateMovie(
+        movie: Movie
+    ) {
+        editTextMovieName.isEnabled = false
+        editTextMovieName.setText(movie.name)
+        editTextReleaseYear.setText(movie.releaseYear.toString())
+        editTextProducer.setText(movie.producer)
+        editTextDuration.setText(movie.duration.toString())
+        ratingBar.rating = movie.rating.toFloat()
+        textViewRating.text = "Minha avaliação: ${movie.rating.toString()}"
     }
-
-    private fun validateIntField(valueText: String, errorMessage: String): Int? {
-        if (valueText.isBlank()) {
-            showToast(errorMessage)
-            return null
-        }
-        return try {
-            valueText.toInt()
-        } catch (e: NumberFormatException) {
-            showToast(errorMessage)
-            null
-        }
-    }
-
-    private fun showSimpleAlertDialog(text:String) {
-        val alertDialogBuilder = AlertDialog.Builder(this.context)
-
-        // Set the dialog message
-        alertDialogBuilder.setMessage(text)
-
-        // Set OK button and its action
-        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
-            // Do something when the user clicks the OK button
-            dialog.dismiss()  // Dismiss the dialog
-        }
-
-        // Create and show the alert dialog
-        val alertDialog: AlertDialog = alertDialogBuilder.create()
-        alertDialog.show()
-    }
-
-
 
 }
 
