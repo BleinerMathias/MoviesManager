@@ -1,6 +1,6 @@
 # 📽️MoviesManager
 
-🏗️ **Em desenvolvimento 📚**
+🏗️ **Concluído 🚀 (GLÓRIA - SPPINER ME MATOU) 📚**
 
 ## Especificação
 
