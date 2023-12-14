@@ -55,14 +55,14 @@ Deve-se manter observância aos conceitos de desenvolvimento de um banco de dado
 10. **Commits e Mensagens:**
     - [X]  Realizar commits regulares com mensagens claras e descritivas.
 8. **Arquitetura do Software:**
-    - [x]  Projeto seguindo uma arquitetura de software MVVM.
+    - [X]  Projeto seguindo uma arquitetura de software MVVM.
 9. **Commits e Mensagens:**
     - [X]  Realizar commits regulares com mensagens claras e descritivas.
 11. **Testes:**
     - [X]  Realize testes para garantir o funcionamento adequado das funcionalidades.
 12. **Vídeo de Demonstração:**
-    - [ ]  Grave um vídeo mostrando o aplicativo em uso, narrando e demonstrando as principais funcionalidades (máximo de 5 minutos).
-    - [ ]  Adicione o vídeo ao repositório.
+    - [X]  Grave um vídeo mostrando o aplicativo em uso, narrando e demonstrando as principais funcionalidades (máximo de 5 minutos).
+    - [X]  Adicione o vídeo ao repositório.
 
 
 ### ⚠️Casos de uso
