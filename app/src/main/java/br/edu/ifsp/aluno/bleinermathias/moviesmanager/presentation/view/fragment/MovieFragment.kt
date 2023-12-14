@@ -1,12 +1,15 @@
 package br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -25,16 +28,18 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.Mov
 import java.util.UUID
 
 
-class MovieFragment : Fragment() {
+class MovieFragment : Fragment()  {
 
     private lateinit var fragmentMovieBinding: FragmentMovieBinding
     private val navigationArgs: MovieFragmentArgs by navArgs()
 
-    private val spinnerDataList: MutableList<String> = mutableListOf()
+    private var movieGenreList: ArrayList<String> = ArrayList()
 
     private val movieViewModel: MovieViewModel by viewModels {
         MovieViewModel.MovieViewModelFactory
     }
+
+    private var selectedGenre = ""
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,19 +51,36 @@ class MovieFragment : Fragment() {
         fragmentMovieBinding = FragmentMovieBinding.inflate(inflater, container, false)
 
 
-        movieViewModel.spinnerDataList.observe(requireActivity()){genres ->
-            spinnerDataList.clear()
-            genres.forEachIndexed{index, genre ->
-                spinnerDataList.add(genre)
-            }
-        }
-        movieViewModel.getAllMovieGenres()
-
         val receivedMovie = navigationArgs.movie
 
         if(receivedMovie == null){
             (activity as AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.new_movie)
         }
+
+
+        movieViewModel.spinnerDataList.observe(requireActivity()){genres ->
+            fragmentMovieBinding.apply {
+                spinnerGenre.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genres)
+                (spinnerGenre.adapter as ArrayAdapter<String>).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                spinnerGenre.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        selectedGenre = genres[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        return
+                    }
+                }
+
+                val position = receivedMovie?.let { genres.indexOf(it.genre) }
+                if(position !== null){
+                    spinnerGenre.setSelection(position);
+                }
+            }
+        }
+
+        movieViewModel.getAllMovieGenres()
 
         receivedMovie?.also { movie ->
             with(fragmentMovieBinding) {
@@ -90,10 +112,6 @@ class MovieFragment : Fragment() {
         }
 
         fragmentMovieBinding.run {
-            /* val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerDataList)
-             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-             spinnerGenre.adapter = adapter
-             spinnerGenre.setSelection(0)*/
 
             btnSaveMovie.setOnClickListener {
                 val checked = if (checkBoxWatched.isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE
@@ -103,39 +121,8 @@ class MovieFragment : Fragment() {
                 val producer = editTextProducer.text.toString()
                 val durationText = editTextDuration.text.toString()
                 val ratingText = editTextRating.text.toString()
-                val selectedGenre = spinnerGenre.selectedItem.toString()
 
                 // Verificações e validações para cada campo
-                if (movieName.isBlank()) {
-                    showToast("Digite o nome do filme")
-                    return@setOnClickListener
-                }
-
-                val releaseYear = validateYear(releaseYearText)
-                if (releaseYear == null) {
-                    return@setOnClickListener
-                }
-
-                if (producer.isBlank()) {
-                    showToast("Digite o nome do produtor")
-                    return@setOnClickListener
-                }
-
-                val duration = validateIntField(durationText, "Duração inválida")
-                if (duration == null) {
-                    return@setOnClickListener
-                }
-
-                val rating = validateIntField(ratingText, "Classificação inválida")
-                if (rating == null) {
-                    return@setOnClickListener
-                }
-
-                if (selectedGenre.isBlank()) {
-                    showToast("Selecione um gênero")
-                    return@setOnClickListener
-                }
-
                 setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
                     putParcelable(
                         EXTRA_MOVIE, Movie(receivedMovie?.id ?: UUID.randomUUID().toString(),
@@ -145,7 +132,7 @@ class MovieFragment : Fragment() {
                             editTextDuration.text.toString().toInt(),
                             checked,
                             editTextRating.text.toString().toInt(),
-                            spinnerGenre.selectedItem.toString()
+                            selectedGenre
                         )
                     )
                 })
@@ -174,7 +161,17 @@ class MovieFragment : Fragment() {
         return fragmentMovieBinding.root
     }
 
-    // Função para exibir uma mensagem Toast
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
+
+
+    private fun Spinner.itemSelected(any: Any) {
+
+    }
+
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
@@ -206,5 +203,24 @@ class MovieFragment : Fragment() {
         }
     }
 
+    private fun showSimpleAlertDialog(text:String) {
+        val alertDialogBuilder = AlertDialog.Builder(this.context)
+
+        // Set the dialog message
+        alertDialogBuilder.setMessage(text)
+
+        // Set OK button and its action
+        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
+            // Do something when the user clicks the OK button
+            dialog.dismiss()  // Dismiss the dialog
+        }
+
+        // Create and show the alert dialog
+        val alertDialog: AlertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+
 
 }
+

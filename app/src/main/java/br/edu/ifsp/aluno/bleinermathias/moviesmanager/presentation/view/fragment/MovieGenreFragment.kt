@@ -33,8 +33,6 @@ class MovieGenreFragment : Fragment() {
         fragmentMovieGenreBinding = FragmentMovieGenreBinding.inflate(inflater, container, false)
 
         fragmentMovieGenreBinding.run {
-
-
             btnSaveMovieGenre.setOnClickListener {
                 setFragmentResult(MainFragment.MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
                     putParcelable(

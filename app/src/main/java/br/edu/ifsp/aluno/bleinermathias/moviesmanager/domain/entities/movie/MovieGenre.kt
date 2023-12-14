@@ -11,4 +11,9 @@ data class MovieGenre(
     @PrimaryKey(autoGenerate = true)
     var id:Int,
     var name: String
-):Parcelable
+):Parcelable {
+    override fun toString(): String {
+        return name
+    }
+}
+

@@ -115,7 +115,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
 
         // Para observar o mutable list
         movieViewModel.moviesMutableLiveData.observe(requireActivity()){movies ->
-            // Alterar para verifcar somente as célular específicas
             moviesList.clear()
             movies.forEachIndexed{index, movie ->
                 moviesList.add(movie)

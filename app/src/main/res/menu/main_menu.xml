@@ -7,4 +7,7 @@
     <item
         android:id="@+id/menuSortByRating"
         android:title="Ordenar por nota" />
+    <item
+        android:id="@+id/menuAddMovieGenre"
+        android:title="Ordenar por nota" />
 </menu>
