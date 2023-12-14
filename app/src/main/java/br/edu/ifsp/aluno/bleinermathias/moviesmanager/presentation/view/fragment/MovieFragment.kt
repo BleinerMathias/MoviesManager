@@ -90,14 +90,15 @@ class MovieFragment : Fragment()  {
                 editTextReleaseYear.setText(movie.releaseYear.toString())
                 editTextProducer.setText(movie.producer)
                 editTextDuration.setText(movie.duration.toString())
-                editTextRating.setText(movie.rating.toString())
+                ratingBar.rating = movie.rating.toFloat()
+                textViewRating.text = "Minha avaliação: ${movie.rating.toString()}"
 
                 // se receber editavel, passar os valores do campo
                 navigationArgs.editMovie.also { editMovie ->
+                    ratingBar.setIsIndicator(!editMovie)
                     editTextReleaseYear.isEnabled = editMovie
                     editTextProducer.isEnabled = editMovie
                     editTextDuration.isEnabled = editMovie
-                    editTextRating.isEnabled = editMovie
                     spinnerGenre.isEnabled = editMovie
 
                     btnSaveMovie.text = if (editMovie) getString(R.string.btn_edit_movie) else ""
@@ -113,6 +114,10 @@ class MovieFragment : Fragment()  {
 
         fragmentMovieBinding.run {
 
+            ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+                textViewRating.text = "Minha avaliação: ${rating.toString()}"
+            }
+
             btnSaveMovie.setOnClickListener {
                 val checked = if (checkBoxWatched.isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE
 
@@ -120,7 +125,6 @@ class MovieFragment : Fragment()  {
                 val releaseYearText = editTextReleaseYear.text.toString()
                 val producer = editTextProducer.text.toString()
                 val durationText = editTextDuration.text.toString()
-                val ratingText = editTextRating.text.toString()
 
                 // Verificações e validações para cada campo
                 setFragmentResult(MOVIE_FRAGMENT_REQUEST_KEY, Bundle().apply {
@@ -131,7 +135,7 @@ class MovieFragment : Fragment()  {
                             editTextProducer.text.toString(),
                             editTextDuration.text.toString().toInt(),
                             checked,
-                            editTextRating.text.toString().toInt(),
+                            ratingBar.rating.toInt(),
                             selectedGenre
                         )
                     )
@@ -148,7 +152,7 @@ class MovieFragment : Fragment()  {
                             editTextProducer.text.toString(),
                             editTextDuration.text.toString().toInt(),
                             if(isChecked) MOVIE_WATCHED_TRUE else MOVIE_WATCHED_FALSE,
-                            editTextRating.text.toString().toInt(),
+                            ratingBar.rating.toInt(),
                             spinnerGenre.selectedItem.toString()
                         )
                     )
@@ -157,26 +161,13 @@ class MovieFragment : Fragment()  {
             }
 
         }
-
         return fragmentMovieBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
-
-
-    private fun Spinner.itemSelected(any: Any) {
-
     }
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    // Função para validar o ano
     private fun validateYear(yearText: String): Int? {
         if (yearText.isBlank()) {
             showToast("Digite o ano de lançamento")

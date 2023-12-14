@@ -9,5 +9,5 @@
         android:title="Ordenar por nota" />
     <item
         android:id="@+id/menuAddMovieGenre"
-        android:title="Ordenar por nota" />
+        android:title="Novo gênero" />
 </menu>

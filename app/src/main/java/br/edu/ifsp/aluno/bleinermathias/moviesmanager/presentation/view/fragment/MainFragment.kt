@@ -102,7 +102,7 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                 }
 
                 movieGenre?.also { receivedMovieGenre ->
-                    showSimpleAlertDialog(receivedMovieGenre.toString())
+                    showSimpleAlertDialog("O gênero ${receivedMovieGenre} foi adicionado com sucesso!")
                     movieViewModel.createMovieGenre(receivedMovieGenre);
                 }
 
@@ -217,15 +217,12 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
     }
 
     private fun showSimpleAlertDialog(text:String) {
-        val alertDialogBuilder = AlertDialog.Builder(this.context)
+        val alertDialogBuilder = AlertDialog.Builder(this.context).apply {
+            setMessage(text)
+            setPositiveButton("OK") {dialog, _ ->
+                dialog.dismiss()
+            }
 
-        // Set the dialog message
-        alertDialogBuilder.setMessage(text)
-
-        // Set OK button and its action
-        alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
-            // Do something when the user clicks the OK button
-            dialog.dismiss()  // Dismiss the dialog
         }
 
         // Create and show the alert dialog

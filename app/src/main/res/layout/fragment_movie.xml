@@ -55,12 +55,27 @@
         android:inputType="number"
         android:textSize="16sp"/>
 
-    <EditText
-        android:id="@+id/editTextRating"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/avaliacao"
-        android:textSize="16sp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="10"
+            android:rating="0"
+            android:stepSize="1.0" />
+
+        <TextView
+            android:id="@+id/textViewRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantidade de Estrelas: 0"
+            android:paddingTop="8dp" />
+
+    </LinearLayout>
 
     <CheckBox
         android:id="@+id/checkBoxWatched"
