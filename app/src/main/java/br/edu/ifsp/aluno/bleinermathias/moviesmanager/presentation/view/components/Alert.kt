@@ -12,8 +12,6 @@ class Alert(private val context: Context) {
                 dialog.dismiss()
             }
         }
-
-        // Create and show the alert dialog
         val alertDialog: AlertDialog = alertDialogBuilder.create()
         alertDialog.show()
     }

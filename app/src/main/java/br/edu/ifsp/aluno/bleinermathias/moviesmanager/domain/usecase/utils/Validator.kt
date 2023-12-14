@@ -7,9 +7,5 @@ abstract class Validator<T> {
         fun nullOrEmpty(string: String?): Boolean {
             return string == null || string.isEmpty()
         }
-
-        fun <E> nullOrEmpty(collection: Collection<E>?): Boolean {
-            return collection == null || collection.isEmpty()
-        }
     }
 }

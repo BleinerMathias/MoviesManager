@@ -129,7 +129,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        // action bar da activity main
         (activity as AppCompatActivity)?.supportActionBar?.title = getString(R.string.my_movies)
         (activity as AppCompatActivity)?.supportActionBar?.subtitle = ""
 
@@ -144,7 +143,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                 )
             }
         }
-
         return fragmentMainBinding.root
     }
 
@@ -162,19 +160,21 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                         sortMoviesInPlace(SortType.ALPHABETICAL)
                         return true
                     }
+
                     R.id.menuSortByRating -> {
                         sortMoviesInPlace(SortType.BY_RATING)
                         return true
                     }
+
                     R.id.menuAddMovieGenre -> {
                         navigatorController.navigate(
                             MainFragmentDirections.actionMovieListToMovieGenreFragment()
                         )
                         return true
                     }
+
                     else -> return true
                 }
-
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
@@ -197,7 +197,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
         }
     }
 
-    // Método para navegar para edição e visualização
     private fun navigateToMovieFragment(position: Int, editMovie: Boolean) {
         moviesList[position].also {
             navigatorController.navigate(

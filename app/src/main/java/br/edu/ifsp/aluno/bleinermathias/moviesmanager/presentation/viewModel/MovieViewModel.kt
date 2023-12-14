@@ -13,6 +13,7 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.security.auth.callback.Callback
 
 
@@ -28,7 +29,7 @@ class MovieViewModel(application: Application):ViewModel() {
         application.applicationContext,
         MoviesDatabase::class.java,
         MoviesDatabase.MOVIES_DATABASE_SQLITE
-    ).build().getMovieGenreDao();
+    ).createFromAsset("").build().getMovieGenreDao();
 
     val moviesMutableLiveData = MutableLiveData<List<Movie>>()
     val spinnerDataList = MutableLiveData<List<String>>()

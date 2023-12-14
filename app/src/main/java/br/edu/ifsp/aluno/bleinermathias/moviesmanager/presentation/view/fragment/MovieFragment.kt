@@ -1,6 +1,5 @@
 package br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.fragment
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -22,6 +19,7 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.databinding.FragmentMovieB
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_FALSE
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movie.Companion.MOVIE_WATCHED_TRUE
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.MovieGenre
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.usecase.movie.MovieInputValidator
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.usecase.utils.Notification
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.usecase.utils.Validator
@@ -62,26 +60,37 @@ class MovieFragment : Fragment()  {
 
 
         movieViewModel.spinnerDataList.observe(requireActivity()){genres ->
-            fragmentMovieBinding.apply {
 
-                spinnerGenre.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genres)
-                (spinnerGenre.adapter as ArrayAdapter<String>).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            if(genres.size === 0){
 
-                spinnerGenre.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        selectedGenre = genres[position]
+                movieViewModel.createMovieGenre( MovieGenre(0,"Ação"))
+                movieViewModel.createMovieGenre( MovieGenre(0,"Animação"))
+                movieViewModel.createMovieGenre( MovieGenre(0,"Suspense"))
+                movieViewModel.getAllMovieGenres()
+
+            }else{
+                fragmentMovieBinding.apply {
+
+                    spinnerGenre.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genres)
+                    (spinnerGenre.adapter as ArrayAdapter<String>).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                    spinnerGenre.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            selectedGenre = genres[position]
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                            return
+                        }
                     }
 
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        return
+                    val position = receivedMovie?.let { genres.indexOf(it.genre) }
+                    if(position !== null){
+                        spinnerGenre.setSelection(position);
                     }
-                }
-
-                val position = receivedMovie?.let { genres.indexOf(it.genre) }
-                if(position !== null){
-                    spinnerGenre.setSelection(position);
                 }
             }
+
         }
 
         movieViewModel.getAllMovieGenres()
@@ -100,6 +109,8 @@ class MovieFragment : Fragment()  {
 
                     btnSaveMovie.text = if (editMovie) getString(R.string.btn_edit_movie) else ""
                     btnSaveMovie.visibility = if (editMovie) VISIBLE else GONE
+
+                    checkBoxWatched.isChecked = if(movie.watched === MOVIE_WATCHED_TRUE) true else false
 
                     if(editMovie){
                         (activity as AppCompatActivity)?.supportActionBar?.subtitle = getString(R.string.edit_movie)

@@ -15,7 +15,6 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movi
 // RecyclerView.Adapter<CustomAdapter.ViewHolder>>
 class MovieAdapter(private val movieList : List<Movie>, private val onMovieTileClickListener: OnMovieTileClickListener): RecyclerView.Adapter<MovieAdapter.MovieTileViewHolder>() {
     inner class MovieTileViewHolder(tileMovieBinding: TileMovieBinding):RecyclerView.ViewHolder(tileMovieBinding.root){
-        // Itens da célula
 
         val textViewMovieName : TextView = tileMovieBinding.textViewMovieName
         val textViewReleaseYear : TextView = tileMovieBinding.textViewReleaseYear
