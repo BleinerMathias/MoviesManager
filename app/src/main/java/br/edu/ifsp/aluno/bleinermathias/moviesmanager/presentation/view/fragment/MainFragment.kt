@@ -33,6 +33,7 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movi
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.MovieGenre
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.MovieAdapter
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.adapter.OnMovieTileClickListener
+import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.view.components.Alert
 import br.edu.ifsp.aluno.bleinermathias.moviesmanager.presentation.viewModel.MovieViewModel
 import kotlin.math.log
 
@@ -71,6 +72,8 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        var alert = Alert(requireContext())
+
         setFragmentResultListener(MOVIE_FRAGMENT_REQUEST_KEY) { requestKey, bundle ->
             if (requestKey == MOVIE_FRAGMENT_REQUEST_KEY) {
 
@@ -86,7 +89,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                     bundle.getParcelable(EXTRA_MOVIE_GENRE)
                 }
 
-
                 movie?.also { receivedMovie ->
                     moviesList.indexOfFirst { it.id == receivedMovie.id }.also { position ->
                         if (position != -1) {
@@ -97,12 +99,13 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
                             movieViewModel.createMovie(receivedMovie)
                             moviesList.add(receivedMovie)
                             movieAdapter.notifyItemInserted(moviesList.lastIndex)
+                            alert.show("${movie.name} foi adicionado com sucesso!")
                         }
                     }
                 }
 
                 movieGenre?.also { receivedMovieGenre ->
-                    showSimpleAlertDialog("O gênero ${receivedMovieGenre} foi adicionado com sucesso!")
+                    alert.show("O gênero ${receivedMovieGenre} foi adicionado com sucesso!")
                     movieViewModel.createMovieGenre(receivedMovieGenre);
                 }
 
@@ -125,7 +128,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        // Inflate the layout for this fragment
 
         // action bar da activity main
         (activity as AppCompatActivity)?.supportActionBar?.title = getString(R.string.my_movies)
@@ -133,8 +135,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
 
         fragmentMainBinding = FragmentMainBinding.inflate(inflater,container,false).apply {
             recyclerViewMovies.layoutManager = LinearLayoutManager(context)
-
-            // Setar um adapter para as célular do recycler
             recyclerViewMovies.adapter = movieAdapter
 
             // Botão fluante
@@ -145,7 +145,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
             }
         }
 
-        // retorna a view
         return fragmentMainBinding.root
     }
 
@@ -155,7 +154,6 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
                 menuInflater.inflate(R.menu.main_menu, menu)
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -216,18 +214,5 @@ class MainFragment : Fragment(), OnMovieTileClickListener {
         movieAdapter.notifyDataSetChanged()
     }
 
-    private fun showSimpleAlertDialog(text:String) {
-        val alertDialogBuilder = AlertDialog.Builder(this.context).apply {
-            setMessage(text)
-            setPositiveButton("OK") {dialog, _ ->
-                dialog.dismiss()
-            }
-
-        }
-
-        // Create and show the alert dialog
-        val alertDialog: AlertDialog = alertDialogBuilder.create()
-        alertDialog.show()
-    }
 
 }

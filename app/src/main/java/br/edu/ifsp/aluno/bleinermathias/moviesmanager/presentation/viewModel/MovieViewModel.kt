@@ -13,6 +13,7 @@ import br.edu.ifsp.aluno.bleinermathias.moviesmanager.domain.entities.movie.Movi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.security.auth.callback.Callback
 
 
 class MovieViewModel(application: Application):ViewModel() {
@@ -76,6 +77,7 @@ class MovieViewModel(application: Application):ViewModel() {
     }
 
 
+
     companion object {
         val MovieViewModelFactory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T =
@@ -83,6 +85,6 @@ class MovieViewModel(application: Application):ViewModel() {
         }
     }
 
-
-
 }
+
+
